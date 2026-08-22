@@ -6,10 +6,14 @@ import { authOptions } from "@/lib/authOptions";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import type { IBook } from "@/models/Book";
-import BookCard from "@/components/BookCard";
+import BookGrid from "@/components/BookGrid";
 import type { BookDTO } from "@/types/models";
 
-export const getServerSideProps: GetServerSideProps<{ books: BookDTO[] }> = async (context) => {
+interface FavoritesProps {
+  books: BookDTO[];
+}
+
+export const getServerSideProps: GetServerSideProps<FavoritesProps> = async (context) => {
   const session = await getServerSession(context.req, context.res, authOptions);
 
   if (!session?.user) {
@@ -21,35 +25,42 @@ export const getServerSideProps: GetServerSideProps<{ books: BookDTO[] }> = asyn
     .populate("favorites")
     .lean()) as unknown as { favorites: IBook[] } | null;
 
+  const books = (user?.favorites ?? []).filter(Boolean);
+
   return {
     props: {
-      books: JSON.parse(JSON.stringify(user?.favorites ?? [])),
+      books: JSON.parse(JSON.stringify(books)),
     },
   };
 };
 
 export default function Favorites({ books }: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return (
-    <div className="container-page py-12">
+    <div className="container-page py-14">
       <Head>
-        <title>Favorites — Libraria</title>
+        <title>Të preferuarat — Libraria</title>
       </Head>
 
-      <h1 className="font-serif text-3xl font-bold text-gray-900 dark:text-gray-100">Të preferuarat e mia</h1>
+      <h1 className="text-[clamp(30px,4vw,48px)]">Librat e mi të preferuar</h1>
+      <p className="mt-2.5 text-muted">
+        Librat që ke shënuar me yll. Kjo listë është e ndarë nga &quot;Dua ta lexoj&quot; te{" "}
+        <Link href="/library" className="lib-link font-semibold" style={{ color: "var(--accent)" }}>
+          Librat e mi
+        </Link>
+        .
+      </p>
 
       {books.length === 0 ? (
-        <p className="mt-6 text-gray-500 dark:text-gray-400">
-          Nuk ke shtuar ende asnjë libër te të preferuarat.{" "}
-          <Link href="/books" className="text-brand-600 hover:underline dark:text-brand-400">
+        <p className="mt-6 text-muted">
+          Ende s&apos;ke shtuar asnjë libër te të preferuarat.{" "}
+          <Link href="/books" className="lib-link font-semibold" style={{ color: "var(--accent)" }}>
             Shfleto librat
           </Link>
           .
         </p>
       ) : (
-        <div className="mt-8 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-          {books.map((book) => (
-            <BookCard key={book._id} book={book} initialFavorited />
-          ))}
+        <div className="mt-9">
+          <BookGrid books={books} favoriteIds={books.map((b) => b._id)} />
         </div>
       )}
     </div>

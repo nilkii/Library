@@ -40,76 +40,53 @@ export default function Login() {
   };
 
   return (
-    <div className="container-page flex justify-center py-16">
+    <div className="container-page flex justify-center py-[70px]">
       <Head>
         <title>Login — Libraria</title>
       </Head>
 
-      <div className="w-full max-w-sm">
-        <h1 className="font-serif text-2xl font-bold text-gray-900 dark:text-gray-100">Kyçu</h1>
-        <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+      <div className="w-full max-w-[420px]">
+        <h1 className="text-[42px]">Kyçu</h1>
+        <p className="mt-2.5 text-muted">
           Nuk ke llogari?{" "}
-          <Link href="/register" className="text-brand-600 hover:underline dark:text-brand-400">
+          <Link href="/register" className="lib-link font-semibold" style={{ color: "var(--accent)" }}>
             Regjistrohu
           </Link>
         </p>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="mt-6 space-y-4" noValidate>
+        <form onSubmit={handleSubmit(onSubmit)} className="mt-[26px] flex flex-col gap-5" noValidate>
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+            <label htmlFor="email" className="lib-label">
               Email
             </label>
-            <input
-              id="email"
-              type="email"
-              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-              {...register("email", { required: "Email-i është i detyrueshëm." })}
-            />
+            <input id="email" type="email" className="lib-input" {...register("email", { required: "Email-i është i detyrueshëm." })} />
             {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>}
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+            <label htmlFor="password" className="lib-label">
               Fjalëkalimi
             </label>
-            <input
-              id="password"
-              type="password"
-              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-              {...register("password", { required: "Fjalëkalimi është i detyrueshëm." })}
-            />
+            <input id="password" type="password" className="lib-input" {...register("password", { required: "Fjalëkalimi është i detyrueshëm." })} />
             {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
           </div>
 
           {formError && <p className="text-sm text-red-600">{formError}</p>}
 
-          <Button type="submit" isLoading={isSubmitting} fullWidth>
+          <Button type="submit" isLoading={isSubmitting} fullWidth style={{ padding: "14px" }}>
             Kyçu
           </Button>
         </form>
 
-        <div className="mt-6 flex items-center gap-3">
-          <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
-          <span className="text-xs uppercase text-gray-400">ose</span>
-          <div className="h-px flex-1 bg-gray-200 dark:bg-gray-800" />
+        <div className="my-[26px] flex items-center gap-3.5 text-xs uppercase text-muted">
+          <span className="h-px flex-1" style={{ background: "var(--line)" }} />
+          OSE
+          <span className="h-px flex-1" style={{ background: "var(--line)" }} />
         </div>
 
-        <div className="mt-4 space-y-2">
-          <Button
-            type="button"
-            variant="secondary"
-            fullWidth
-            onClick={() => signIn("google", { callbackUrl })}
-          >
+        <div className="flex flex-col gap-3">
+          <Button type="button" variant="ghost" fullWidth onClick={() => signIn("google", { callbackUrl })}>
             Vazhdo me Google
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            fullWidth
-            onClick={() => signIn("facebook", { callbackUrl })}
-          >
-            Vazhdo me Facebook
           </Button>
         </div>
       </div>

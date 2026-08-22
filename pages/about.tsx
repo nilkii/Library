@@ -18,6 +18,8 @@ const team = [
   },
 ];
 
+const tech = ["Next.js", "TypeScript", "Tailwind CSS", "NextAuth.js", "MongoDB", "react-hook-form", "Jest", "GitHub Actions"];
+
 export default function About() {
   return (
     <div className="container-page py-16">
@@ -25,40 +27,37 @@ export default function About() {
         <title>About — Libraria</title>
       </Head>
 
-      <div className="mx-auto max-w-3xl text-center">
-        <h1 className="font-serif text-3xl font-bold text-gray-900 dark:text-gray-100 sm:text-4xl">
-          Rreth Libraria
-        </h1>
-        <p className="mt-4 text-gray-600 dark:text-gray-300">
+      <div className="mx-auto max-w-[860px] pt-4 text-center">
+        <h1 className="text-[clamp(32px,4.6vw,56px)]">Rreth Libraria</h1>
+        <p className="mx-auto mt-6 max-w-[62ch] text-[17px] leading-[1.75] text-muted">
           Libraria është një projekt semestral për lëndën <em>Zhvillim i Ueb-it në Anën e Klientit</em>.
-          Qëllimi ynë ishte të ndërtojmë një dyqan online funksional librash, duke përdorur Next.js,
-          MongoDB, NextAuth dhe Tailwind CSS — nga autentifikimi dhe menaxhimi i roleve, deri te CRUD
-          i plotë, data fetching me SSR/SSG/ISR, dhe një ndërfaqe plotësisht responsive.
+          Qëllimi ynë ishte të ndërtojmë një dyqan online funksional librash — nga autentifikimi dhe
+          menaxhimi i roleve, deri te CRUD i plotë, data fetching dhe një ndërfaqe plotësisht responsive.
         </p>
-      </div>
 
-      <div className="mx-auto mt-12 grid max-w-3xl gap-6 sm:grid-cols-2">
-        {team.map((member) => (
-          <div
-            key={member.name}
-            className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900"
-          >
-            <div className="mx-auto mb-3 flex h-16 w-16 items-center justify-center rounded-full bg-brand-100 text-2xl font-bold text-brand-700 dark:bg-brand-900 dark:text-brand-300">
-              {member.name.charAt(0)}
+        <div className="mt-11 grid gap-6 sm:grid-cols-2">
+          {team.map((member) => (
+            <div key={member.name} className="lib-card flex flex-col items-center gap-1.5 p-8">
+              <span className="font-display grid h-[74px] w-[74px] place-items-center rounded-full bg-accent text-[32px] text-accent-ink">
+                {member.name.charAt(0)}
+              </span>
+              <span className="font-display mt-2 text-2xl">{member.name}</span>
+              <span className="font-semibold" style={{ color: "var(--gold)" }}>{member.role}</span>
+              <p className="mt-1.5 text-sm leading-relaxed text-muted">{member.bio}</p>
             </div>
-            <h2 className="font-semibold text-gray-900 dark:text-gray-100">{member.name}</h2>
-            <p className="text-sm font-medium text-brand-600 dark:text-brand-400">{member.role}</p>
-            <p className="mt-2 text-sm text-gray-500 dark:text-gray-400">{member.bio}</p>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
 
-      <div className="mx-auto mt-12 max-w-3xl rounded-xl border border-gray-200 bg-gray-50 p-6 dark:border-gray-800 dark:bg-gray-900">
-        <h2 className="mb-2 font-semibold text-gray-900 dark:text-gray-100">Teknologjitë e përdorura</h2>
-        <p className="text-sm text-gray-600 dark:text-gray-300">
-          Next.js (Pages Router) · TypeScript · Tailwind CSS · NextAuth.js · MongoDB &amp; Mongoose ·
-          react-hook-form · Jest &amp; React Testing Library · GitHub Actions
-        </p>
+        <div className="lib-card mt-6 p-7 text-left">
+          <h3 className="mb-3.5 text-[22px]">Teknologjitë e përdorura</h3>
+          <div className="flex flex-wrap gap-2.5">
+            {tech.map((t) => (
+              <span key={t} className="lib-tag" style={{ background: "var(--surface-2)", color: "var(--text)" }}>
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );

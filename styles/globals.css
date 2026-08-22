@@ -2,16 +2,224 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --bg: #f3ede0;
+  --surface: #fbf7ee;
+  --surface-2: #efe7d7;
+  --text: #1f2a24;
+  --muted: #5f6b60;
+  --accent: #1f6b4f;
+  --accent-ink: #fbf7ee;
+  --accent-soft: #e7efe7;
+  --gold: #b98a2e;
+  --line: #e0d8c6;
+  --field: #fbf7ee;
+  --ok: #2f8a5f;
+}
+
+html.dark {
+  --bg: #12140f;
+  --surface: #1b1e17;
+  --surface-2: #242820;
+  --text: #f1ecdd;
+  --muted: #a3a696;
+  --accent: #5aa981;
+  --accent-ink: #0f1710;
+  --accent-soft: #1f2a22;
+  --gold: #d8b45a;
+  --line: rgba(241, 236, 221, 0.1);
+  --field: #242820;
+  --ok: #68c295;
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  @apply bg-white text-gray-900 transition-colors duration-200 dark:bg-gray-950 dark:text-gray-100;
+  @apply bg-bg text-ink;
+  font-family: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  transition:
+    background-color 0.2s,
+    color 0.2s;
+}
+
+h1,
+h2,
+h3,
+.font-display {
+  font-family: '"Libre Caslon Display"', serif;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 @layer utilities {
   .container-page {
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8;
   }
+}
+
+@layer components {
+  .lib-link {
+    @apply cursor-pointer transition-colors duration-150;
+    color: inherit;
+  }
+  .lib-link:hover {
+    color: var(--accent);
+  }
+
+  .lib-btn {
+    @apply inline-flex cursor-pointer items-center justify-center gap-2 rounded-full border-0 px-6 py-3 text-[15px] font-semibold transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+    font-family: "Manrope", sans-serif;
+  }
+  .lib-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .lib-primary {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  .lib-primary:hover {
+    filter: brightness(0.94);
+  }
+  .lib-secondary {
+    background: var(--surface-2);
+    color: var(--text);
+  }
+  .lib-secondary:hover {
+    filter: brightness(0.96);
+  }
+  .lib-ghost {
+    background: transparent;
+    color: var(--text);
+    border: 1px solid var(--line);
+  }
+  .lib-ghost:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .lib-danger {
+    @apply cursor-pointer bg-transparent font-semibold;
+    color: #c0503a;
+    border: none;
+  }
+  .lib-danger:hover {
+    text-decoration: underline;
+  }
+  .lib-danger-solid {
+    background: #c0503a;
+    color: #fdf7f2;
+  }
+  .lib-danger-solid:hover {
+    filter: brightness(0.92);
+  }
+
+  .lib-card {
+    @apply rounded-card;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    transition: 0.2s;
+  }
+  .lib-card-hoverable:hover {
+    box-shadow: 0 18px 44px rgba(31, 42, 36, 0.16);
+    transform: translateY(-3px);
+  }
+
+  .lib-input {
+    @apply w-full rounded-xl px-3.5 py-3 text-[15px] outline-none transition-all duration-150;
+    color: var(--text);
+    background: var(--field);
+    border: 1px solid var(--line);
+  }
+  .lib-input::placeholder {
+    color: var(--muted);
+  }
+  .lib-input:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px var(--accent-soft);
+  }
+
+  .lib-label {
+    @apply mb-1.5 block text-[13px] font-semibold;
+    color: var(--muted);
+  }
+
+  .lib-tag {
+    @apply inline-flex items-center rounded-full px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.1em];
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .lib-heart {
+    @apply absolute right-3 top-3 z-10 grid h-9 w-9 cursor-pointer place-items-center rounded-full border-0 transition-colors duration-150;
+    background: rgba(15, 20, 14, 0.4);
+    backdrop-filter: blur(4px);
+  }
+  .lib-heart:hover {
+    background: rgba(15, 20, 14, 0.62);
+  }
+
+  .lib-star {
+    @apply absolute left-3 top-3 z-10 grid h-9 w-9 cursor-pointer place-items-center rounded-full border-0 transition-colors duration-150;
+    background: rgba(15, 20, 14, 0.4);
+    backdrop-filter: blur(4px);
+  }
+  .lib-star:hover {
+    background: rgba(15, 20, 14, 0.62);
+  }
+
+  .lib-table {
+    @apply w-full border-collapse text-sm;
+  }
+  .lib-table th {
+    @apply px-4 py-3.5 text-left text-[11px] font-semibold uppercase tracking-[0.09em];
+    color: var(--muted);
+    border-bottom: 1px solid var(--line);
+  }
+  .lib-table td {
+    @apply px-4 py-4;
+    border-bottom: 1px solid var(--line);
+  }
+  .lib-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  .lib-table tbody tr:hover {
+    background: var(--surface-2);
+  }
+
+  .lib-backdrop {
+    @apply fixed inset-0 z-[60] grid place-items-center p-5;
+    background: rgba(15, 20, 14, 0.55);
+    backdrop-filter: blur(3px);
+  }
+  .lib-dialog {
+    @apply w-full rounded-dialog p-6;
+    max-width: 540px;
+    max-height: 90vh;
+    overflow: auto;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+  }
+}
+
+@keyframes lib-rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.lib-screen {
+  animation: lib-rise 0.45s ease both;
 }

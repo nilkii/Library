@@ -6,10 +6,16 @@ export interface BookDTO {
   title: string;
   author: string;
   description: string;
+  summary?: string;
   price: number;
   genre: string;
   coverImage: string;
   stock: number;
+  publishYear?: number;
+  pages?: number;
+  language?: string;
+  publisher?: string;
+  isbn?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -31,4 +37,43 @@ export interface ContactMessageDTO {
   subject: string;
   message: string;
   createdAt: string;
+}
+
+export type LibraryStatus = "want" | "reading" | "read";
+
+export interface LibraryEntryDTO {
+  status: LibraryStatus;
+  book: BookDTO;
+}
+
+export interface OrderItemDTO {
+  book: string;
+  title: string;
+  price: number;
+  quantity: number;
+}
+
+export interface ShippingAddressDTO {
+  fullName: string;
+  address: string;
+  city: string;
+  phone: string;
+}
+
+export type OrderStatus = "placed" | "fulfilled" | "cancelled";
+
+export interface OrderDTO {
+  _id: string;
+  user: string;
+  items: OrderItemDTO[];
+  total: number;
+  shippingAddress: ShippingAddressDTO;
+  status: OrderStatus;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface OrderSummaryDTO extends OrderDTO {
+  userName?: string;
+  userEmail?: string;
 }

@@ -22,15 +22,35 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const session = await requireAdmin(req, res);
     if (!session) return;
 
-    const { title, author, description, price, genre, coverImage, stock } = req.body ?? {};
+    const {
+      title,
+      author,
+      description,
+      summary,
+      price,
+      genre,
+      coverImage,
+      stock,
+      publishYear,
+      pages,
+      language,
+      publisher,
+      isbn,
+    } = req.body ?? {};
     const update: Record<string, unknown> = {};
     if (title !== undefined) update.title = title;
     if (author !== undefined) update.author = author;
     if (description !== undefined) update.description = description;
+    if (summary !== undefined) update.summary = summary;
     if (price !== undefined) update.price = price;
     if (genre !== undefined) update.genre = genre;
     if (coverImage !== undefined) update.coverImage = coverImage;
     if (stock !== undefined) update.stock = stock;
+    if (publishYear !== undefined) update.publishYear = publishYear;
+    if (pages !== undefined) update.pages = pages;
+    if (language !== undefined) update.language = language;
+    if (publisher !== undefined) update.publisher = publisher;
+    if (isbn !== undefined) update.isbn = isbn;
 
     const book = await Book.findByIdAndUpdate(id, update, { new: true, runValidators: true });
     if (!book) return res.status(404).json({ message: "Libri nuk u gjet." });

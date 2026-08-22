@@ -24,7 +24,7 @@ mesazheve të kontaktit.
 
 - **Next.js 14** (Pages Router) + **TypeScript**
 - **Tailwind CSS** — stilizim responsive, dark mode me `class` strategy
-- **NextAuth.js** — autentifikim me Credentials + Google & Facebook OAuth, role-based middleware
+- **NextAuth.js** — autentifikim me Credentials + Google OAuth, role-based middleware
 - **MongoDB** + **Mongoose** — 4 modele: `User`, `Book`, `Review`, `ContactMessage`
 - **react-hook-form** — validim formash
 - **Context API** — dark/light mode global; **Custom Hooks** — `useDebounce`, `useFavorite`
@@ -37,7 +37,7 @@ mesazheve të kontaktit.
 - 11 faqe: Home, About, Contact, Login, Register, Dashboard, Admin Panel, Books (Products),
   Book Details (Product Details), Profile, Favorites — plus faqe 404 e personalizuar.
 - 6 komponentë të ripërdorshëm: `Header`, `Footer`, `BookCard`, `Modal`, `Button`, `ReviewForm`.
-- Autentifikim me NextAuth (Credentials, Google, Facebook) dhe menaxhim rolesh (`user` / `admin`)
+- Autentifikim me NextAuth (Credentials, Google) dhe menaxhim rolesh (`user` / `admin`)
   përmes `middleware.ts`.
 - CRUD i plotë për **Books** (admin) dhe **Reviews** (përdoruesi mbi vlerësimin e vet).
 - Data fetching me `getServerSideProps` (Dashboard, Profile, Favorites, Admin),
@@ -80,7 +80,6 @@ Plotëso këto vlera në `.env.local`:
 | `NEXTAUTH_SECRET` | Vlerë e rastësishme; gjenero me `openssl rand -base64 32` |
 | `NEXTAUTH_URL` | `http://localhost:3000` në zhvillim |
 | `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` | Nga Google Cloud Console (opsionale por të kërkuara nga kërkesat) |
-| `FACEBOOK_CLIENT_ID` / `FACEBOOK_CLIENT_SECRET` | Nga Facebook for Developers (opsionale) |
 
 #### a) Krijimi i një MongoDB Atlas cluster (falas)
 
@@ -100,16 +99,8 @@ Plotëso këto vlera në `.env.local`:
    `http://localhost:3000/api/auth/callback/google`
 5. Kopjo `Client ID` dhe `Client Secret` te `.env.local`.
 
-#### c) Krijimi i Facebook OAuth credentials
-
-1. Shko te [developers.facebook.com](https://developers.facebook.com/) → **My Apps → Create App**
-   (tipi "Consumer").
-2. Shto produktin **Facebook Login** dhe vendos:
-   `http://localhost:3000/api/auth/callback/facebook` te "Valid OAuth Redirect URIs".
-3. Kopjo `App ID` dhe `App Secret` te `.env.local` (`FACEBOOK_CLIENT_ID` / `FACEBOOK_CLIENT_SECRET`).
-
-> Nëse Google/Facebook nuk konfigurohen, aplikacioni funksionon normalisht me Credentials
-> (email + fjalëkalim) — providers e OAuth thjesht nuk shfaqen si aktive.
+> Nëse Google nuk konfigurohet, aplikacioni funksionon normalisht me Credentials
+> (email + fjalëkalim) — provider-i OAuth thjesht nuk shfaqet si aktiv.
 
 ### 4. Popullo databazën me të dhëna fillestare (opsionale por e rekomanduar)
 
@@ -148,8 +139,8 @@ npm test        # Jest — teste për komponentë dhe API routes
 2. Në [vercel.com](https://vercel.com), importo repository-n.
 3. Te **Settings → Environment Variables**, shto të njëjtat variabla si në `.env.local`
    (`MONGODB_URI`, `NEXTAUTH_SECRET`, `NEXTAUTH_URL` — vendose si `https://<domain>.vercel.app`,
-   `GOOGLE_CLIENT_ID/SECRET`, `FACEBOOK_CLIENT_ID/SECRET`).
-4. Shto edhe redirect URI-t e reja (me domain-in e Vercel) te Google/Facebook OAuth apps.
+   `GOOGLE_CLIENT_ID/SECRET`).
+4. Shto edhe redirect URI-n e re (me domain-in e Vercel) te Google OAuth app.
 5. Deploy. Vendos linkun final në krye të këtij README-je.
 
 ---

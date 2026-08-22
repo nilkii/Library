@@ -10,21 +10,28 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        brand: {
-          50: "#f5f3ff",
-          100: "#ede9fe",
-          200: "#ddd6fe",
-          300: "#c4b5fd",
-          400: "#a78bfa",
-          500: "#8b5cf6",
-          600: "#7c3aed",
-          700: "#6d28d9",
-          800: "#5b21b6",
-          900: "#4c1d95",
+        bg: "var(--bg)",
+        surface: "var(--surface)",
+        surface2: "var(--surface-2)",
+        ink: "var(--text)",
+        muted: "var(--muted)",
+        accent: {
+          DEFAULT: "var(--accent)",
+          ink: "var(--accent-ink)",
+          soft: "var(--accent-soft)",
         },
+        gold: "var(--gold)",
+        line: "var(--line)",
+        field: "var(--field)",
+        ok: "var(--ok)",
       },
       fontFamily: {
-        serif: ["Georgia", "Cambria", "Times New Roman", "Times", "serif"],
+        serif: ['"Libre Caslon Display"', "ui-serif", "Georgia", "serif"],
+        sans: ["Manrope", "ui-sans-serif", "system-ui", "sans-serif"],
+      },
+      borderRadius: {
+        card: "14px",
+        dialog: "18px",
       },
     },
   },

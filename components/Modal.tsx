@@ -26,27 +26,25 @@ export default function Modal({ isOpen, onClose, title, children }: ModalProps) 
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4"
-      onClick={onClose}
-      role="presentation"
-    >
+    <div className="lib-backdrop" onClick={onClose} role="presentation">
       <div
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl dark:bg-gray-900"
+        className="lib-dialog"
         role="dialog"
         aria-modal="true"
         aria-label={title}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="mb-4 flex items-center justify-between">
-          {title && <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{title}</h2>}
+        <div className="mb-[18px] flex items-center justify-between">
+          {title && <h2 className="font-display text-[22px]">{title}</h2>}
           <button
             type="button"
             onClick={onClose}
             aria-label="Mbyll"
-            className="ml-auto rounded-md p-1 text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800"
+            className="ml-auto cursor-pointer border-0 bg-transparent text-muted"
           >
-            ✕
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
           </button>
         </div>
         {children}

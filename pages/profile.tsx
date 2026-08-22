@@ -94,25 +94,25 @@ export default function Profile({ name, email, image, provider }: InferGetServer
   };
 
   return (
-    <div className="container-page max-w-xl py-12">
+    <div className="container-page max-w-xl py-14">
       <Head>
         <title>Profile — Libraria</title>
       </Head>
 
-      <h1 className="font-serif text-3xl font-bold text-gray-900 dark:text-gray-100">Profili im</h1>
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{email}</p>
+      <h1 className="text-[clamp(28px,4vw,48px)]">Profili im</h1>
+      <p className="mt-1.5 text-sm text-muted">{email}</p>
 
-      <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="mt-8 space-y-4" noValidate>
-        <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Të dhënat e mia</h2>
+      <form onSubmit={profileForm.handleSubmit(onProfileSubmit)} className="mt-8 flex flex-col gap-4" noValidate>
+        <h2 className="text-lg font-semibold">Të dhënat e mia</h2>
 
         <div>
-          <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+          <label htmlFor="name" className="lib-label">
             Emri
           </label>
           <input
             id="name"
             type="text"
-            className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+            className="lib-input"
             {...profileForm.register("name", { required: "Emri është i detyrueshëm.", minLength: { value: 2, message: "Të paktën 2 karaktere." } })}
           />
           {profileForm.formState.errors.name && (
@@ -121,56 +121,47 @@ export default function Profile({ name, email, image, provider }: InferGetServer
         </div>
 
         <div>
-          <label htmlFor="image" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+          <label htmlFor="image" className="lib-label">
             URL e fotos (opsionale)
           </label>
-          <input
-            id="image"
-            type="url"
-            placeholder="https://..."
-            className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-            {...profileForm.register("image")}
-          />
+          <input id="image" type="url" placeholder="https://..." className="lib-input" {...profileForm.register("image")} />
         </div>
 
         {profileStatus && (
-          <p className={`text-sm ${profileStatus.type === "success" ? "text-green-600" : "text-red-600"}`}>
+          <p className={`text-sm ${profileStatus.type === "success" ? "" : "text-red-600"}`} style={profileStatus.type === "success" ? { color: "var(--ok)" } : undefined}>
             {profileStatus.text}
           </p>
         )}
 
-        <Button type="submit" isLoading={profileForm.formState.isSubmitting}>
-          Ruaj ndryshimet
-        </Button>
+        <div>
+          <Button type="submit" isLoading={profileForm.formState.isSubmitting}>
+            Ruaj ndryshimet
+          </Button>
+        </div>
       </form>
 
       {provider === "credentials" && (
-        <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="mt-12 space-y-4 border-t border-gray-200 pt-8 dark:border-gray-800" noValidate>
-          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Ndrysho fjalëkalimin</h2>
+        <form onSubmit={passwordForm.handleSubmit(onPasswordSubmit)} className="mt-12 flex flex-col gap-4 border-t pt-8" style={{ borderColor: "var(--line)" }} noValidate>
+          <h2 className="text-lg font-semibold">Ndrysho fjalëkalimin</h2>
 
           <div>
-            <label htmlFor="currentPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+            <label htmlFor="currentPassword" className="lib-label">
               Fjalëkalimi aktual
             </label>
-            <input
-              id="currentPassword"
-              type="password"
-              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-              {...passwordForm.register("currentPassword", { required: "E detyrueshme." })}
-            />
+            <input id="currentPassword" type="password" className="lib-input" {...passwordForm.register("currentPassword", { required: "E detyrueshme." })} />
             {passwordForm.formState.errors.currentPassword && (
               <p className="mt-1 text-sm text-red-600">{passwordForm.formState.errors.currentPassword.message}</p>
             )}
           </div>
 
           <div>
-            <label htmlFor="newPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
+            <label htmlFor="newPassword" className="lib-label">
               Fjalëkalimi i ri
             </label>
             <input
               id="newPassword"
               type="password"
-              className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
+              className="lib-input"
               {...passwordForm.register("newPassword", {
                 required: "E detyrueshme.",
                 minLength: { value: 6, message: "Të paktën 6 karaktere." },
@@ -182,14 +173,16 @@ export default function Profile({ name, email, image, provider }: InferGetServer
           </div>
 
           {passwordStatus && (
-            <p className={`text-sm ${passwordStatus.type === "success" ? "text-green-600" : "text-red-600"}`}>
+            <p className={`text-sm ${passwordStatus.type === "success" ? "" : "text-red-600"}`} style={passwordStatus.type === "success" ? { color: "var(--ok)" } : undefined}>
               {passwordStatus.text}
             </p>
           )}
 
-          <Button type="submit" variant="secondary" isLoading={passwordForm.formState.isSubmitting}>
-            Ndrysho fjalëkalimin
-          </Button>
+          <div>
+            <Button type="submit" variant="ghost" isLoading={passwordForm.formState.isSubmitting}>
+              Ndrysho fjalëkalimin
+            </Button>
+          </div>
         </form>
       )}
     </div>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { forwardRef, type AnchorHTMLAttributes, type ButtonHTMLAttributes } from "react";
 
-type Variant = "primary" | "secondary" | "danger" | "ghost";
+type Variant = "primary" | "secondary" | "ghost" | "danger";
 type Size = "sm" | "md" | "lg";
 
 interface CommonProps {
@@ -22,29 +22,23 @@ type LinkProps = CommonProps &
 type ButtonProps = ButtonOnlyProps | LinkProps;
 
 const variantClasses: Record<Variant, string> = {
-  primary:
-    "bg-brand-600 text-white hover:bg-brand-700 focus-visible:outline-brand-600 disabled:bg-brand-300",
-  secondary:
-    "bg-gray-100 text-gray-900 hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-100 dark:hover:bg-gray-700",
-  danger: "bg-red-600 text-white hover:bg-red-700 disabled:bg-red-300",
-  ghost:
-    "bg-transparent text-brand-700 hover:bg-brand-50 dark:text-brand-300 dark:hover:bg-gray-800",
+  primary: "lib-primary",
+  secondary: "lib-secondary",
+  ghost: "lib-ghost",
+  danger: "lib-danger-solid",
 };
 
 const sizeClasses: Record<Size, string> = {
-  sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2 text-sm",
-  lg: "px-6 py-3 text-base",
+  sm: "px-4 py-2 text-sm",
+  md: "px-6 py-3 text-sm",
+  lg: "px-7 py-3.5 text-base",
 };
-
-const baseClasses =
-  "inline-flex items-center justify-center gap-2 rounded-lg font-medium transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:cursor-not-allowed";
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(props, ref) {
   const { variant = "primary", size = "md", isLoading, fullWidth, className = "", children, ...rest } =
     props;
 
-  const classes = `${baseClasses} ${variantClasses[variant]} ${sizeClasses[size]} ${
+  const classes = `lib-btn ${variantClasses[variant]} ${sizeClasses[size]} ${
     fullWidth ? "w-full" : ""
   } ${className}`;
 

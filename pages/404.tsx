@@ -7,13 +7,14 @@ export default function Custom404() {
       <Head>
         <title>404 — Libraria</title>
       </Head>
-      <p className="text-6xl">📖</p>
-      <h1 className="mt-4 font-serif text-3xl font-bold text-gray-900 dark:text-gray-100">
-        404 — Faqja nuk u gjet
-      </h1>
-      <p className="mt-2 max-w-md text-gray-500 dark:text-gray-400">
-        Faqja që po kërkoni nuk ekziston ose është zhvendosur.
-      </p>
+      <span className="grid h-16 w-16 place-items-center rounded-full bg-accent-soft text-accent">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+        </svg>
+      </span>
+      <h1 className="mt-5 text-3xl">404 — Faqja nuk u gjet</h1>
+      <p className="mt-2 max-w-md text-muted">Faqja që po kërkoni nuk ekziston ose është zhvendosur.</p>
       <Button href="/" className="mt-6">
         Kthehu në Home
       </Button>

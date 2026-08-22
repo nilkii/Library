@@ -2,16 +2,11 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "covers.openlibrary.org",
-      },
-      {
-        protocol: "https",
-        hostname: "placehold.co",
-      },
-    ],
+    // Admins can paste a book cover URL from any site — Next's optimizer only
+    // allows whitelisted hostnames, which doesn't work for arbitrary URLs.
+    // Disabling optimization loads images directly in the browser instead,
+    // trading automatic resizing for not needing a domain allowlist.
+    unoptimized: true,
   },
 };
 

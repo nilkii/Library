@@ -4,9 +4,9 @@ import Head from "next/head";
 import { useSession } from "next-auth/react";
 import dbConnect from "@/lib/dbConnect";
 import Book from "@/models/Book";
-import BookCard from "@/components/BookCard";
+import BookGrid from "@/components/BookGrid";
 import { useDebounce } from "@/hooks/useDebounce";
-import type { BookDTO } from "@/types/models";
+import type { BookDTO, LibraryEntryDTO, LibraryStatus } from "@/types/models";
 
 export const getStaticProps: GetStaticProps<{ initialBooks: BookDTO[]; genres: string[] }> = async () => {
   try {
@@ -27,6 +27,13 @@ export const getStaticProps: GetStaticProps<{ initialBooks: BookDTO[]; genres: s
   }
 };
 
+const SORT_OPTIONS = [
+  { value: "newest", label: "Më i ri" },
+  { value: "price_asc", label: "Çmimi: e ulët → e lartë" },
+  { value: "price_desc", label: "Çmimi: e lartë → e ulët" },
+  { value: "title_asc", label: "Titulli: A → Z" },
+];
+
 export default function BooksPage({
   initialBooks,
   genres,
@@ -34,8 +41,10 @@ export default function BooksPage({
   const { data: session } = useSession();
   const [query, setQuery] = useState("");
   const [genre, setGenre] = useState("all");
+  const [sort, setSort] = useState("newest");
   const [books, setBooks] = useState<BookDTO[]>(initialBooks);
   const [loading, setLoading] = useState(false);
+  const [libraryStatuses, setLibraryStatuses] = useState<Record<string, LibraryStatus>>({});
   const [favoriteIds, setFavoriteIds] = useState<Set<string>>(new Set());
 
   const debouncedQuery = useDebounce(query, 350);
@@ -44,6 +53,7 @@ export default function BooksPage({
     const params = new URLSearchParams();
     if (debouncedQuery) params.set("search", debouncedQuery);
     if (genre !== "all") params.set("genre", genre);
+    params.set("sort", sort);
 
     setLoading(true);
     fetch(`/api/books?${params.toString()}`)
@@ -51,16 +61,23 @@ export default function BooksPage({
       .then((data: BookDTO[]) => setBooks(data))
       .catch(() => setBooks(initialBooks))
       .finally(() => setLoading(false));
-  }, [debouncedQuery, genre, initialBooks]);
+  }, [debouncedQuery, genre, sort, initialBooks]);
 
   useEffect(() => {
     if (!session) {
+      setLibraryStatuses({});
       setFavoriteIds(new Set());
       return;
     }
+    fetch("/api/library")
+      .then((res) => res.json())
+      .then((entries: LibraryEntryDTO[]) =>
+        setLibraryStatuses(Object.fromEntries(entries.map((e) => [e.book._id, e.status])))
+      )
+      .catch(() => setLibraryStatuses({}));
     fetch("/api/favorites")
       .then((res) => res.json())
-      .then((favs: { _id: string }[]) => setFavoriteIds(new Set(favs.map((f) => f._id))))
+      .then((books: BookDTO[]) => setFavoriteIds(new Set(books.map((b) => b._id))))
       .catch(() => setFavoriteIds(new Set()));
   }, [session]);
 
@@ -70,20 +87,28 @@ export default function BooksPage({
         <title>Books — Libraria</title>
       </Head>
 
-      <h1 className="font-serif text-3xl font-bold text-gray-900 dark:text-gray-100">Të gjithë librat</h1>
+      <h1 className="text-[clamp(32px,4.4vw,52px)]">Të gjithë librat</h1>
 
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-        <input
-          type="search"
-          placeholder="Kërko sipas titullit ose autorit..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          className="w-full flex-1 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-        />
+      <div className="mt-7 flex flex-wrap gap-3.5">
+        <div className="relative min-w-[240px] flex-1">
+          <span className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-muted">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <circle cx="11" cy="11" r="8" />
+              <path d="m21 21-4.3-4.3" />
+            </svg>
+          </span>
+          <input
+            type="search"
+            placeholder="Kërko sipas titullit ose autorit…"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="lib-input pl-[44px]"
+          />
+        </div>
         <select
           value={genre}
           onChange={(e) => setGenre(e.target.value)}
-          className="w-full rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 sm:w-56"
+          className="lib-input w-auto min-w-[190px] cursor-pointer sm:w-52"
         >
           <option value="all">Të gjitha zhanret</option>
           {genres.map((g) => (
@@ -92,19 +117,26 @@ export default function BooksPage({
             </option>
           ))}
         </select>
+        <select
+          value={sort}
+          onChange={(e) => setSort(e.target.value)}
+          className="lib-input w-auto min-w-[190px] cursor-pointer sm:w-64"
+        >
+          {SORT_OPTIONS.map((opt) => (
+            <option key={opt.value} value={opt.value}>
+              {opt.label}
+            </option>
+          ))}
+        </select>
       </div>
 
-      <div className="mt-8">
+      <div className="mt-9">
         {loading ? (
-          <p className="text-gray-500 dark:text-gray-400">Duke kërkuar...</p>
+          <p className="text-muted">Duke kërkuar...</p>
         ) : books.length === 0 ? (
-          <p className="text-gray-500 dark:text-gray-400">Nuk u gjet asnjë libër.</p>
+          <p className="text-muted">Nuk u gjet asnjë libër.</p>
         ) : (
-          <div className="grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
-            {books.map((book) => (
-              <BookCard key={book._id} book={book} initialFavorited={favoriteIds.has(book._id)} />
-            ))}
-          </div>
+          <BookGrid books={books} libraryStatuses={libraryStatuses} favoriteIds={favoriteIds} />
         )}
       </div>
     </div>

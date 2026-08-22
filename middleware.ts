@@ -3,7 +3,7 @@ import type { NextRequest } from "next/server";
 import { getToken } from "next-auth/jwt";
 
 const ADMIN_ONLY_PREFIXES = ["/admin"];
-const AUTH_REQUIRED_PREFIXES = ["/dashboard", "/profile", "/favorites", "/admin"];
+const AUTH_REQUIRED_PREFIXES = ["/dashboard", "/profile", "/library", "/admin", "/checkout", "/orders"];
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
@@ -30,5 +30,12 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/profile/:path*", "/favorites/:path*", "/admin/:path*"],
+  matcher: [
+    "/dashboard/:path*",
+    "/profile/:path*",
+    "/library/:path*",
+    "/admin/:path*",
+    "/checkout/:path*",
+    "/orders/:path*",
+  ],
 };

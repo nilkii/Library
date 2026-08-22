@@ -1,43 +1,41 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
-/** Tracks and toggles whether a book is in the current user's favorites list. */
-export function useFavorite(bookId: string, initialFavorited: boolean) {
+/** Tracks and toggles whether a book is in the current user's favorites. */
+export function useFavorite(bookId: string, initialFavorite: boolean) {
   const { data: session } = useSession();
-  const [favorited, setFavorited] = useState(initialFavorited);
+  const [isFavorite, setIsFavorite] = useState(initialFavorite);
   const [loading, setLoading] = useState(false);
 
-  // `initialFavorited` often starts false and flips true once the parent page
-  // finishes fetching the user's favorites list asynchronously — pick that up.
   useEffect(() => {
-    setFavorited(initialFavorited);
-  }, [initialFavorited]);
+    setIsFavorite(initialFavorite);
+  }, [initialFavorite]);
 
-  const toggleFavorite = async () => {
+  const toggle = async () => {
     if (!session) {
       window.location.href = `/login?callbackUrl=/books/${bookId}`;
       return;
     }
 
     setLoading(true);
-    const previous = favorited;
-    setFavorited(!previous);
+    const previous = isFavorite;
+    setIsFavorite(!previous);
 
     try {
       const res = await fetch("/api/favorites", {
-        method: "POST",
+        method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bookId }),
       });
       if (!res.ok) throw new Error("Request failed");
       const data = await res.json();
-      setFavorited(data.favorited);
+      setIsFavorite(data.favorite);
     } catch {
-      setFavorited(previous);
+      setIsFavorite(previous);
     } finally {
       setLoading(false);
     }
   };
 
-  return { favorited, toggleFavorite, loading, isLoggedIn: Boolean(session) };
+  return { isFavorite, toggle, loading };
 }

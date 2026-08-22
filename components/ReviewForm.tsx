@@ -48,42 +48,41 @@ export default function ReviewForm({ bookId, existingReview, onSubmitted }: Revi
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="space-y-3" noValidate>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-200">Vlerësimi</label>
-        <div className="mt-1 flex gap-1">
-          {[1, 2, 3, 4, 5].map((value) => (
-            <button
-              key={value}
-              type="button"
-              onClick={() => setRating(value)}
-              aria-label={`${value} yje`}
-              className="text-2xl leading-none"
-            >
-              {value <= rating ? "⭐" : "☆"}
-            </button>
-          ))}
-        </div>
+    <form onSubmit={handleSubmit(onSubmit)} noValidate>
+      <label className="lib-label">Vlerësimi</label>
+      <div className="mb-4 flex gap-1.5">
+        {[1, 2, 3, 4, 5].map((value) => (
+          <button
+            key={value}
+            type="button"
+            onClick={() => setRating(value)}
+            aria-label={`${value} yje`}
+            className="cursor-pointer border-0 bg-transparent p-0.5"
+            style={{ color: value <= rating ? "var(--gold)" : "color-mix(in srgb, var(--text) 22%, transparent)" }}
+          >
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+              <path d="M11.5 2.6a.6.6 0 0 1 1 0l2.6 5.3 5.8.8a.6.6 0 0 1 .3 1l-4.2 4.1 1 5.8a.6.6 0 0 1-.9.6L12 17.5l-5.2 2.7a.6.6 0 0 1-.9-.6l1-5.8-4.2-4.1a.6.6 0 0 1 .3-1l5.8-.8z" />
+            </svg>
+          </button>
+        ))}
       </div>
 
-      <div>
-        <label htmlFor="comment" className="block text-sm font-medium text-gray-700 dark:text-gray-200">
-          Komenti
-        </label>
-        <textarea
-          id="comment"
-          rows={3}
-          className="mt-1 w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100"
-          {...register("comment", {
-            required: "Komenti është i detyrueshëm.",
-            minLength: { value: 3, message: "Të paktën 3 karaktere." },
-          })}
-        />
-        {errors.comment && <p className="mt-1 text-sm text-red-600">{errors.comment.message}</p>}
-      </div>
+      <label htmlFor="comment" className="lib-label">
+        Komenti
+      </label>
+      <textarea
+        id="comment"
+        rows={3}
+        className="lib-input mb-1 resize-y"
+        {...register("comment", {
+          required: "Komenti është i detyrueshëm.",
+          minLength: { value: 3, message: "Të paktën 3 karaktere." },
+        })}
+      />
+      {errors.comment && <p className="mb-3 text-sm text-red-600">{errors.comment.message}</p>}
 
       {status && (
-        <p className={`text-sm ${status.type === "success" ? "text-green-600" : "text-red-600"}`}>
+        <p className={`mb-3 text-sm ${status.type === "success" ? "" : "text-red-600"}`} style={status.type === "success" ? { color: "var(--ok)" } : undefined}>
           {status.text}
         </p>
       )}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Caslon+Display&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { margin: 0; }
+  .ath { --bg:#f3ede0; --surface:#fbf7ee; --text:#1f2a24; --muted:#5f6b60; --accent:#1f6b4f; --gold:#b98a2e; --line:#e0d8c6;
+    background:var(--bg); color:var(--text); font-family:'Manrope',sans-serif; min-height:100vh; --edge:clamp(20px,5vw,68px); }
+  .ath h1,.ath h2,.ath h3 { font-family:'Libre Caslon Display',serif; font-weight:400; letter-spacing:-.005em; }
+  .ath a { color:inherit; text-decoration:none; }
+  .ath-link:hover { color:var(--accent); }
+  .ath-btn { display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer; font-family:'Manrope',sans-serif; font-weight:600; font-size:15px; border-radius:999px; padding:13px 26px; transition:.18s; }
+  .ath-primary { background:var(--accent); color:#fbf7ee; }
+  .ath-primary:hover { background:#185840; }
+  .ath-ghost { background:transparent; color:var(--text); border:1px solid var(--line); }
+  .ath-ghost:hover { border-color:var(--accent); color:var(--accent); }
+  .ath-card { background:var(--surface); border:1px solid var(--line); border-radius:14px; overflow:hidden; transition:.2s; }
+  .ath-card:hover { box-shadow:0 18px 44px rgba(31,42,36,.14); transform:translateY(-3px); }
+  @keyframes ath-rise { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
+  .ath-rise { animation:ath-rise .5s ease both; }
+</style>
+</helmet>
+<div class="ath">
+  <header style="position:sticky;top:0;z-index:20;background:rgba(243,237,224,.82);backdrop-filter:blur(12px);border-bottom:1px solid var(--line);">
+    <div style="max-width:1200px;margin:0 auto;padding:18px var(--edge);display:flex;align-items:center;gap:32px;">
+      <span style="display:inline-flex;align-items:center;gap:11px;font-family:'Libre Caslon Display',serif;font-size:25px;margin-right:auto;">
+        <span style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--accent);"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fbf7ee" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg></span>
+        Libraria
+      </span>
+      <nav style="display:flex;gap:28px;font-size:15px;color:var(--muted);">
+        <a class="ath-link" style="color:var(--text);">Home</a><a class="ath-link">Books</a><a class="ath-link">About</a><a class="ath-link">Contact</a>
+      </nav>
+      <div style="display:flex;gap:12px;align-items:center;font-size:15px;">
+        <a class="ath-link" style="color:var(--muted);">Login</a>
+        <button class="ath-btn ath-primary" style="padding:10px 22px;">Register</button>
+      </div>
+    </div>
+  </header>
+
+  <main style="max-width:1200px;margin:0 auto;padding:0 var(--edge);">
+    <section class="ath-rise" style="display:grid;grid-template-columns:1.1fr .9fr;gap:56px;align-items:center;padding:76px 0 58px;">
+      <div>
+        <span style="display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);"><span style="width:26px;height:1px;background:var(--gold);"></span>Dyqani online i librave</span>
+        <h1 style="font-size:clamp(44px,5.6vw,78px);line-height:1.04;margin:20px 0 0;">Gjeni librin tuaj të radhës në <span style="color:var(--accent);">Libraria</span></h1>
+        <p style="font-size:18px;line-height:1.6;color:var(--muted);max-width:46ch;margin:22px 0 0;">Një dyqan online i thjeshtë me libra nga zhanre të ndryshme — shfletoni, lexoni përshkrime, lini vlerësime dhe ruani librat tuaj të preferuar.</p>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:30px;">
+          <button class="ath-btn ath-primary">Shfleto Librat</button>
+          <button class="ath-btn ath-ghost">Mëso më shumë</button>
+        </div>
+      </div>
+      <div style="position:relative;height:430px;">
+        <div style="position:absolute;inset:4% 0;background:radial-gradient(circle at 55% 45%,rgba(31,107,79,.16),transparent 70%);"></div>
+        <sc-for list="{{ heroBooks }}" as="b" hint-placeholder-count="3">
+          <div style="{{ b.heroStyle }}">
+            <span style="font-size:10px;letter-spacing:.14em;text-transform:uppercase;opacity:.8;">{{ b.genre }}</span>
+            <span style="font-family:'Libre Caslon Display',serif;font-size:28px;line-height:1.06;margin-top:auto;">{{ b.title }}</span>
+            <span style="font-size:12px;opacity:.85;">{{ b.author }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="padding:44px 0 96px;">
+      <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:30px;">
+        <h2 style="font-size:clamp(30px,3.4vw,42px);margin:0;">Librat më të fundit</h2>
+        <a class="ath-link" style="color:var(--accent);font-weight:600;">Shiko të gjitha →</a>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:24px;">
+        <sc-for list="{{ books }}" as="b" hint-placeholder-count="8">
+          <div class="ath-card">
+            <div style="position:relative;aspect-ratio:3/4;display:flex;flex-direction:column;justify-content:flex-end;gap:6px;padding:22px;color:#f6efe0;background:{{ b.cover }};">
+              <div style="position:absolute;inset:0;border:1px solid rgba(246,239,224,.18);border-radius:0;margin:12px;pointer-events:none;"></div>
+              <span style="position:absolute;top:20px;left:22px;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);">{{ b.genre }}</span>
+              <span style="font-family:'Libre Caslon Display',serif;font-size:30px;line-height:1.04;color:{{ b.gold }};">{{ b.title }}</span>
+              <span style="font-size:12px;opacity:.85;">{{ b.author }}</span>
+            </div>
+            <div style="padding:15px 18px 20px;display:flex;justify-content:space-between;align-items:center;">
+              <div style="display:flex;flex-direction:column;">
+                <span style="font-size:14px;font-weight:700;">{{ b.title }}</span>
+                <span style="font-size:12px;color:var(--muted);">{{ b.priceLabel }}</span>
+              </div>
+              <span style="display:grid;place-items:center;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);color:var(--accent);"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.29 1.51 4.04 3 5.5l7 7Z"/></svg></span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+
+  <footer style="border-top:1px solid var(--line);background:var(--surface);">
+    <div style="max-width:1200px;margin:0 auto;padding:36px var(--edge);display:flex;justify-content:space-between;flex-wrap:wrap;gap:20px;color:var(--muted);font-size:14px;">
+      <span style="font-family:'Libre Caslon Display',serif;font-size:22px;color:var(--text);">Libraria</span>
+      <span>© 2026 Libraria. Të gjitha të drejtat e rezervuara.</span>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  books = [
+    { title: 'Asking for a Friend', author: 'Andi Osho', genre: 'Komedi', price: 15.00, cover: 'linear-gradient(160deg,#7a5230,#4a2f18)', gold: '#e6c579' },
+    { title: 'Educated', author: 'Tara Westover', genre: 'Biography', price: 16.25, cover: 'linear-gradient(160deg,#2f4b3f,#16281f)', gold: '#e6c579' },
+    { title: 'The Alchemist', author: 'Paulo Coelho', genre: 'Fiction', price: 11.99, cover: 'linear-gradient(160deg,#6b4226,#3a2213)', gold: '#efcf86' },
+    { title: 'Clean Code', author: 'Robert C. Martin', genre: 'Technology', price: 29.99, cover: 'linear-gradient(160deg,#26424e,#132530)', gold: '#e6c579' },
+    { title: 'The Midnight Library', author: 'Matt Haig', genre: 'Fiction', price: 13.75, cover: 'linear-gradient(160deg,#3a3a5a,#1c1c30)', gold: '#e6c579' },
+    { title: 'Sapiens', author: 'Yuval Noah Harari', genre: 'History', price: 21.00, cover: 'linear-gradient(160deg,#294a54,#14262b)', gold: '#efcf86' },
+    { title: 'Dune', author: 'Frank Herbert', genre: 'Sci-Fi', price: 17.50, cover: 'linear-gradient(160deg,#8a5220,#4a2c10)', gold: '#f0d287' },
+    { title: 'Atomic Habits', author: 'James Clear', genre: 'Self-Help', price: 19.99, cover: 'linear-gradient(160deg,#33503f,#182a20)', gold: '#e6c579' },
+  ];
+  renderVals() {
+    const wp = this.books.map(b => ({ ...b, priceLabel: '€' + b.price.toFixed(2) }));
+    const heroPos = [
+      'left:2%;top:5%;transform:rotate(-6deg);',
+      'right:2%;top:0;transform:rotate(5deg);',
+      'left:29%;bottom:2%;transform:rotate(-2deg);',
+    ];
+    const heroBooks = [wp[1], wp[2], wp[5]].map((b, i) => ({
+      ...b,
+      heroStyle: `position:absolute;width:44%;aspect-ratio:3/4;display:flex;flex-direction:column;gap:6px;padding:20px;border-radius:12px;color:${b.gold};box-shadow:0 22px 54px rgba(31,42,36,.4);background:${b.cover};${heroPos[i]}`,
+    }));
+    return { books: wp, heroBooks };
+  }
+}
+</script>
+</body>
+</html>

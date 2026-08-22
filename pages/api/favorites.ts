@@ -14,10 +14,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const user = (await User.findById(session.user.id)
       .populate("favorites")
       .lean()) as unknown as { favorites: IBook[] } | null;
-    return res.status(200).json(user?.favorites ?? []);
+    const books = (user?.favorites ?? []).filter(Boolean);
+    return res.status(200).json(books);
   }
 
-  if (req.method === "POST") {
+  if (req.method === "PUT") {
     const { bookId } = req.body ?? {};
     if (!bookId || typeof bookId !== "string") {
       return res.status(400).json({ message: "bookId mungon." });
@@ -26,22 +27,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const user = await User.findById(session.user.id);
     if (!user) return res.status(404).json({ message: "Përdoruesi nuk u gjet." });
 
-    const index = user.favorites.findIndex(
-      (fav: mongoose.Types.ObjectId) => fav.toString() === bookId
-    );
-    let favorited: boolean;
+    const index = user.favorites.findIndex((id) => id.toString() === bookId);
+    let favorite: boolean;
+
     if (index >= 0) {
       user.favorites.splice(index, 1);
-      favorited = false;
+      favorite = false;
     } else {
       user.favorites.push(new mongoose.Types.ObjectId(bookId));
-      favorited = true;
+      favorite = true;
     }
-    await user.save();
 
-    return res.status(200).json({ favorited });
+    await user.save();
+    return res.status(200).json({ favorite });
   }
 
-  res.setHeader("Allow", ["GET", "POST"]);
+  res.setHeader("Allow", ["GET", "PUT"]);
   return res.status(405).json({ message: "Method not allowed" });
 }

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
@@ -6,10 +7,13 @@ import { authOptions } from "@/lib/authOptions";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
 import Review from "@/models/Review";
+import Order from "@/models/Order";
 import type { ReviewDTO } from "@/types/models";
 
 interface DashboardProps {
+  libraryCounts: { want: number; reading: number; read: number };
   favoritesCount: number;
+  ordersCount: number;
   reviews: ReviewDTO[];
   userName: string;
 }
@@ -22,12 +26,24 @@ export const getServerSideProps: GetServerSideProps<DashboardProps> = async (con
   }
 
   await dbConnect();
-  const user = await User.findById(session.user.id).lean();
-  const reviews = await Review.find({ user: session.user.id }).sort({ createdAt: -1 }).lean();
+  const [user, reviews, ordersCount] = await Promise.all([
+    User.findById(session.user.id).lean(),
+    Review.find({ user: session.user.id }).sort({ createdAt: -1 }).lean(),
+    Order.countDocuments({ user: session.user.id }),
+  ]);
+
+  const library = user?.library ?? [];
+  const libraryCounts = {
+    want: library.filter((e) => e.status === "want").length,
+    reading: library.filter((e) => e.status === "reading").length,
+    read: library.filter((e) => e.status === "read").length,
+  };
 
   return {
     props: {
+      libraryCounts,
       favoritesCount: user?.favorites?.length ?? 0,
+      ordersCount,
       reviews: JSON.parse(JSON.stringify(reviews)),
       userName: session.user.name ?? "Përdorues",
     },
@@ -35,30 +51,52 @@ export const getServerSideProps: GetServerSideProps<DashboardProps> = async (con
 };
 
 export default function Dashboard({
+  libraryCounts,
   favoritesCount,
-  reviews,
+  ordersCount,
+  reviews: initialReviews,
   userName,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
+  const [reviews, setReviews] = useState(initialReviews);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+
+  const handleDelete = async (reviewId: string) => {
+    if (!window.confirm("A je i sigurt që dëshiron ta fshish këtë koment?")) return;
+    setDeletingId(reviewId);
+    try {
+      const res = await fetch(`/api/reviews/${reviewId}`, { method: "DELETE" });
+      if (res.ok) {
+        setReviews((prev) => prev.filter((r) => r._id !== reviewId));
+      }
+    } finally {
+      setDeletingId(null);
+    }
+  };
+
   return (
-    <div className="container-page py-12">
+    <div className="container-page py-14">
       <Head>
         <title>Dashboard — Libraria</title>
       </Head>
 
-      <h1 className="font-serif text-3xl font-bold text-gray-900 dark:text-gray-100">Mirë se erdhe, {userName}!</h1>
+      <h1 className="text-[clamp(28px,3.8vw,46px)]">Mirë se erdhe, {userName}!</h1>
 
-      <div className="mt-8 grid gap-6 sm:grid-cols-3">
+      <div className="mt-8 grid gap-5 sm:grid-cols-3">
+        <StatCard label="Po lexoj" value={libraryCounts.reading} href="/library" />
+        <StatCard label="Dua ta lexoj" value={libraryCounts.want} href="/library" />
+        <StatCard label="Kam lexuar" value={libraryCounts.read} href="/library" />
         <StatCard label="Të preferuarat" value={favoritesCount} href="/favorites" />
+        <StatCard label="Porositë e mia" value={ordersCount} href="/orders" />
         <StatCard label="Vlerësimet e mia" value={reviews.length} />
         <StatCard label="Profili im" value="Menaxho" href="/profile" isLink />
       </div>
 
-      <section className="mt-12">
-        <h2 className="font-serif text-xl font-bold text-gray-900 dark:text-gray-100">Vlerësimet e mia të fundit</h2>
+      <section className="mt-11">
+        <h2 className="text-[28px]">Vlerësimet e mia të fundit</h2>
         {reviews.length === 0 ? (
-          <p className="mt-3 text-sm text-gray-500 dark:text-gray-400">
+          <p className="mt-3 text-sm text-muted">
             Nuk ke lënë ende asnjë vlerësim.{" "}
-            <Link href="/books" className="text-brand-600 hover:underline dark:text-brand-400">
+            <Link href="/books" className="lib-link font-semibold" style={{ color: "var(--accent)" }}>
               Shfleto librat
             </Link>
             .
@@ -66,14 +104,27 @@ export default function Dashboard({
         ) : (
           <ul className="mt-4 space-y-3">
             {reviews.map((review) => (
-              <li key={review._id} className="rounded-xl border border-gray-200 p-4 dark:border-gray-800">
+              <li key={review._id} className="lib-card p-4">
                 <div className="flex items-center justify-between">
-                  <Link href={`/books/${review.book}`} className="font-medium text-brand-600 hover:underline dark:text-brand-400">
+                  <Link href={`/books/${review.book}`} className="lib-link font-semibold" style={{ color: "var(--accent)" }}>
                     Shiko librin
                   </Link>
-                  <span className="text-yellow-600 dark:text-yellow-400">{"⭐".repeat(review.rating)}</span>
+                  <span style={{ color: "var(--gold)" }}>{"⭐".repeat(review.rating)}</span>
                 </div>
-                <p className="mt-1 text-sm text-gray-600 dark:text-gray-300">{review.comment}</p>
+                <p className="mt-1 text-sm text-muted">{review.comment}</p>
+                <div className="mt-2.5 flex gap-4 text-sm">
+                  <Link href={`/books/${review.book}`} className="lib-link font-semibold" style={{ color: "var(--accent)" }}>
+                    Ndrysho
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => handleDelete(review._id)}
+                    disabled={deletingId === review._id}
+                    className="lib-danger"
+                  >
+                    {deletingId === review._id ? "Duke fshirë…" : "Fshi"}
+                  </button>
+                </div>
               </li>
             ))}
           </ul>
@@ -95,9 +146,11 @@ function StatCard({
   isLink?: boolean;
 }) {
   const content = (
-    <div className="rounded-xl border border-gray-200 bg-white p-6 text-center shadow-sm dark:border-gray-800 dark:bg-gray-900">
-      <p className="text-3xl font-bold text-brand-600 dark:text-brand-400">{isLink ? "→" : value}</p>
-      <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">{label}</p>
+    <div className={`lib-card p-8 text-center ${href ? "lib-card-hoverable cursor-pointer" : ""}`}>
+      <div className="font-display text-[46px]" style={{ color: "var(--accent)" }}>
+        {isLink ? "→" : value}
+      </div>
+      <div className="text-muted">{label}</div>
     </div>
   );
 
