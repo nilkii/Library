@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import "@/models/Book"; // registers Book so populate() works (server-only file)
 
 const MONGODB_URI = process.env.MONGODB_URI;
 

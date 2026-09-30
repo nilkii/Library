@@ -2,7 +2,6 @@ import type { NextApiRequest, NextApiResponse } from "next";
 import mongoose from "mongoose";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
-import "@/models/Book"; // regjistron modelin Book për populate()
 import type { IBook } from "@/models/Book";
 import type { LibraryStatus } from "@/types/models";
 import { requireUser } from "@/lib/apiAuth";
