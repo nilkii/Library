@@ -13,7 +13,11 @@ export async function middleware(req: NextRequest) {
     return NextResponse.next();
   }
 
-  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+  // Derive the cookie name from the actual request protocol rather than
+  // NEXTAUTH_URL, which may be unset/mismatched on Vercel.
+  const secureCookie =
+    req.nextUrl.protocol === "https:" || req.headers.get("x-forwarded-proto") === "https";
+  const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET, secureCookie });
 
   if (!token) {
     const loginUrl = new URL("/login", req.url);

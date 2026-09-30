@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { signIn } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import Button from "@/components/Button";
 
@@ -13,6 +13,7 @@ interface LoginFormData {
 
 export default function Login() {
   const router = useRouter();
+  const { status } = useSession();
   const callbackUrl = typeof router.query.callbackUrl === "string" ? router.query.callbackUrl : "/dashboard";
 
   const {
@@ -22,6 +23,10 @@ export default function Login() {
   } = useForm<LoginFormData>();
 
   const [formError, setFormError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (status === "authenticated") router.replace(callbackUrl);
+  }, [status, callbackUrl, router]);
 
   const onSubmit = async (data: LoginFormData) => {
     setFormError(null);
