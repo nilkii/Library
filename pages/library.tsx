@@ -6,6 +6,7 @@ import { getServerSession } from "next-auth/next";
 import { authOptions } from "@/lib/authOptions";
 import dbConnect from "@/lib/dbConnect";
 import User from "@/models/User";
+import "@/models/Book"; // regjistron modelin Book për populate()
 import type { IBook } from "@/models/Book";
 import BookGrid from "@/components/BookGrid";
 import type { BookDTO, LibraryStatus } from "@/types/models";
